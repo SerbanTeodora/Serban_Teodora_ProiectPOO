@@ -2,108 +2,160 @@
 using namespace std;
 
 class OfertaTuristica {
-public:
-    string nume;
+private:
+    string numeOferta;
     string destinatie;
     float pret;
     string data_inceput;
     string data_sfarsit;
     int locuri_disponibile;
+    static int contorOferte;  // atribut static
 
+    // Atribut constant
+    const string* descriere;
+
+public:
     // Constructor cu toti parametrii
-    OfertaTuristica(string nume, string destinatie, float pret, string data_inceput, string data_sfarsit, int locuri_disponibile) {
-        this->nume = nume;
-        this->destinatie = destinatie;
-        this->pret = pret;
-        this->data_inceput = data_inceput;
-        this->data_sfarsit = data_sfarsit;
-        this->locuri_disponibile = locuri_disponibile;
+    OfertaTuristica(string nume, string destinatie, float pret, string data_inceput, string data_sfarsit, int locuri_disponibile, const string& descriere)
+        : numeOferta(nume), destinatie(destinatie), pret(pret), data_inceput(data_inceput), data_sfarsit(data_sfarsit), locuri_disponibile(locuri_disponibile) {
+        this->descriere = new string(descriere);
+        contorOferte++;  // incrementare la fiecare creare de obiect
     }
 
     // Constructor cu nume si destinatie
-    OfertaTuristica(string nume, string destinatie) {
-        this->nume = nume;
+    OfertaTuristica(string nume, string destinatie)
+        : numeOferta("Oferta XYZ") {
+        this->numeOferta = nume;
         this->destinatie = destinatie;
-        this->pret = 0.0; // Initializare cu valoare implicita
+        this->pret = 0.0;
         this->data_inceput = "";
         this->data_sfarsit = "";
         this->locuri_disponibile = 0;
+        this->descriere = new string("N/A");
+        contorOferte++;
     }
 
     // Constructor fara parametri
-    OfertaTuristica() {
-        nume = "";
+    OfertaTuristica()
+        : numeOferta("Oferta XYZ") {
+        numeOferta = "";
         destinatie = "";
         pret = 0.0;
         data_inceput = "";
         data_sfarsit = "";
         locuri_disponibile = 0;
+        this->descriere = new string("N/A");
+        contorOferte++;
     }
 
-    // Funcție statică pentru a calcula durata ofertei
-    static int CalculeazaDurata(const OfertaTuristica& oferta) {
-        // Aici puteți calcula durata în funcție de data de început și data de sfârșit
-        // Returnați durata în zile, luni sau altă unitate, după cum doriți
-        // Exemplu simplu pentru zile:
-        int durata = 0;
-        // Pseudo-cod: calculați durata
-        // Exemplu: durata = diferența dintre data_sfarsit și data_inceput în zile
-        return durata;
+    // Destructor
+    ~OfertaTuristica() {
+        delete descriere;
+        contorOferte--;
     }
+
+    string GetNumeOferta() {
+        return this->numeOferta;
+    }
+    string GetDestinatie() {
+        return this->destinatie;
+    }
+    float GetPret() {
+        return this->pret;
+    }
+    string GetDataInceput() {
+        return this->data_inceput;
+    }
+    string GetDataSfarsit() {
+        return this->data_sfarsit;
+    }
+    int GetLocuriDisponibile() {
+        return this->locuri_disponibile;
+    }
+    const string* GetDescriere() {
+        return this->descriere;
+    }
+    void SetNumeOferta(const string& nume) {
+        this->numeOferta = nume;
+    }
+    void SetDestinatie(const string& destinatie) {
+        this->destinatie = destinatie;
+    }
+    void SetPret(float pret) {
+        this->pret = pret;
+    }
+    void SetDataInceput(const string& data_inceput) {
+        this->data_inceput = data_inceput;
+    }
+    void SetDataSfarsit(const string& data_sfarsit) {
+        this->data_sfarsit = data_sfarsit;
+    }
+    void SetLocuriDisponibile(int locuri_disponibile) {
+        this->locuri_disponibile = locuri_disponibile;
+    }
+    void SetDescriere(const string& descriere){
+        this->descriere = new string(descriere);
+    }
+
+    //// Funcție statică pentru a calcula durata ofertei
+    //static int CalculeazaDurata(const OfertaTuristica & oferta) {
+    //    // Aici puteți calcula durata în funcție de data de început și data de sfârșit
+    //    // Returnați durata în zile, luni sau altă unitate, după cum doriți
+    //    return 0;
+    //}
 };
+int OfertaTuristica::contorOferte = 0;
 
 class AgentieTurism {
 public:
-    string nume;
+    string numeAgentie;
     string adresa;
     string telefon;
     OfertaTuristica* oferte_turistice;
     static const int numarMaximOferte = 100;
+    static int numarAgentii;  // atribut static
+
+    // Atribut constant
+    const string* descriereAgentie;
 
     // Constructor cu toti parametrii
-    AgentieTurism(string nume, string adresa, string telefon) {
-        this->nume = nume;
-        this->adresa = adresa;
-        this->telefon = telefon;
+    AgentieTurism(string nume, string adresa, string telefon, const string& descriereAgentie)
+        : numeAgentie(nume), adresa(adresa), telefon(telefon) {
         this->oferte_turistice = new OfertaTuristica[numarMaximOferte];
+        this->descriereAgentie = new string(descriereAgentie);
+        numarAgentii++;  // incrementare la fiecare creare de obiect
     }
 
     // Constructor cu nume si adresa
-    AgentieTurism(string nume, string adresa) {
-        this->nume = nume;
-        this->adresa = adresa;
-        this->telefon = "";
+    AgentieTurism(string nume, string adresa) : numeAgentie(nume), adresa(adresa), telefon(""), descriereAgentie(new string("N/A")) {
         this->oferte_turistice = new OfertaTuristica[numarMaximOferte];
+        numarAgentii++;
     }
 
     // Constructor fara parametri
-    AgentieTurism() {
-        nume = "";
-        adresa = "";
-        telefon = "";
+    AgentieTurism() : numeAgentie("Agentia de Turism XYZ"), adresa(""), telefon(""), descriereAgentie(new string("N/A")) {
         oferte_turistice = new OfertaTuristica[numarMaximOferte];
+        numarAgentii++;
+    }
+
+    // Destructor
+    ~AgentieTurism() {
+        delete[] oferte_turistice;
+        delete descriereAgentie;
+        numarAgentii--;
     }
 
     // Functie statica pentru a afisa toate ofertele
     static void AfiseazaOferte(const AgentieTurism& agentie) {
-        cout << "Ofertele din agentia de turism " << agentie.nume << ":" << endl;
+        cout << "Ofertele din agentia de turism " << agentie.numeAgentie << ":" << endl;
         for (int i = 0; i < numarMaximOferte; i++) {
-            if (!agentie.oferte_turistice[i].nume.empty()) {
-                cout << "Oferta: " << agentie.oferte_turistice[i].nume << " - Destinatie: " << agentie.oferte_turistice[i].destinatie << endl;
-            }
-        }
-    }
-
-    // Funcție pentru adaugarea unei oferte in agentie
-    void AdaugaOferta(const OfertaTuristica& oferta) {
-        for (int i = 0; i < numarMaximOferte; i++) {
-            if (oferte_turistice[i].nume.empty()) {
-                oferte_turistice[i] = oferta;
-                break;
+            if (!agentie.oferte_turistice[i].numeOferta.empty()) {
+                cout << "Oferta: " << agentie.oferte_turistice[i].numeOferta << " - Destinatie: " << agentie.oferte_turistice[i].destinatie << endl;
             }
         }
     }
 };
+int AgentieTurism::numarAgentii = 0;
 
 class Rezervare {
 public:
@@ -112,49 +164,96 @@ public:
     string data;
     int numar_adulti;
     int numar_copii;
+    string* descriereRezervare;
+    const string numeRezervare;
+    static int contorRezervari;
 
     // Constructor cu toti parametrii (folosind lista de initializare)
     Rezervare(string nume, string destinatie, string data, int numar_adulti, int numar_copii)
-        : nume(nume), destinatie(destinatie), data(data), numar_adulti(numar_adulti), numar_copii(numar_copii) {
+        : nume(nume), numeRezervare("Rezervare XYZ") {
+        this->destinatie = destinatie;
+        this->data = data;
+        this->numar_adulti = numar_adulti;
+        this->numar_copii = numar_copii;
+        this->descriereRezervare = new string("Rezervare confirmata!");
+        contorRezervari++;
     }
 
     // Constructor cu nume si destinatie
     Rezervare(string nume, string destinatie)
-        : nume(nume), destinatie(destinatie), data(""), numar_adulti(0), numar_copii(0) {
+        : nume(nume), numeRezervare("Rezervare XYZ") {
+        this->destinatie = destinatie;
+        this->data = "";
+        this->numar_adulti = 0;
+        this->numar_copii = 0;
+        this->descriereRezervare = new string("N/A");
+        contorRezervari++;
     }
 
-    // Constructor fara parametri (atributele constante sunt deja initializate)
+    // Constructor fără parametri (atributele constante sunt deja initializate)
     Rezervare()
-        : nume(""), destinatie(""), data(""), numar_adulti(0), numar_copii(0) {
+        : nume(""), numeRezervare("Rezervare XYZ") {
+        destinatie = "";
+        data = "";
+        numar_adulti = 0;
+        numar_copii = 0;
+        this->descriereRezervare = new string("N/A");
+        contorRezervari++;
+    }
+
+    // Destructor
+    ~Rezervare() {
+        delete descriereRezervare;
+        contorRezervari--;
     }
 
     // Funcție statica pentru a calcula costul rezervarii
     static float CalculeazaCostul(const Rezervare& rezervare) {
-        // Aici puteți calcula costul în funcție de destinație, numărul de adulți și copii, și alte criterii
+        // Aici puteti calcula costul in functie de destinatie, numarul de adulti si copii, si alte criterii
         return 0.0;
     }
 };
+int Rezervare::contorRezervari = 0;
+
+// Functie globala prietena cu clasele
+void FunctiePrietena(const OfertaTuristica& oferta, const AgentieTurism& agentie, const Rezervare& rezervare) {
+    // Aici puteti accesa atributele private ale claselor si sa realizati prelucrarile dorite
+}
 
 int main() {
-    // Testați toti constructorii si funcțiile statice
-    OfertaTuristica oferta1("Vacanta la mare", "Mamaia", 800.0, "2023-07-15", "2023-07-22", 50);
+    // Testati toti constructorii si functiile statice
+
+    // OfertaTuristica
+    OfertaTuristica oferta1("Vacanta la mare", "Mamaia", 800.0, "2023-07-15", "2023-07-22", 50, "O saptamana de relaxare la malul marii.");
     OfertaTuristica oferta2("City break", "Paris");
     OfertaTuristica oferta3;
-    AgentieTurism agentie1("Travel World", "Strada Turistica, Nr. 123", "+1234567890");
-    AgentieTurism agentie2("Adventure Tours", "Strada Aventurii, Nr. 456");
+
+    // AgentieTurism
+    AgentieTurism agentie1("Travel World", "Strada Turistica, Nr. 123", "+1234567890", "Agentie de turism specializata in vacante exotice.");
+    AgentieTurism agentie2("Adventure Tours", "Strada Aventurii, Nr. 456", "", "Agentie de turism pentru pasionatii de aventuri.");
     AgentieTurism agentie3;
-    Rezervare rezervare1("Maria", "Mamaia", "2023-07-17", 2, 1);
-    Rezervare rezervare2("Andrei", "Paris");
-    Rezervare rezervare3;
 
-    // Adaugați oferte la agentii de turism
-    agentie1.AdaugaOferta(oferta1);
-    agentie2.AdaugaOferta(oferta2);
-    agentie2.AdaugaOferta(oferta3);
+    // Afisati informatii despre oferte
+    cout << "Detalii oferte turistice:" << endl;
+    cout << "-------------------------" << endl;
+    cout << "Oferta 1:" << endl;
+    cout << "Durata: " << OfertaTuristica::CalculeazaDurata(oferta1) << " zile" << endl;
+    cout << "Descriere: " << *oferta1.descriere << endl;
+    cout << "Numar total oferte: " << OfertaTuristica::contorOferte << endl;
+    cout << endl;
 
-    // Afisati ofertele din agentiile de turism
-    AgentieTurism::AfiseazaOferte(agentie1);
-    AgentieTurism::AfiseazaOferte(agentie2);
+    // Afișați informatii despre agentii de turism
+    cout << "Detalii agentii de turism:" << endl;
+    cout << "---------------------------" << endl;
+    cout << "Agentia 1:" << endl;
+    cout << "Numar total agentii: " << AgentieTurism::numarAgentii << endl;
+    cout << "Descriere agentie: " << *agentie1.descriereAgentie << endl;
+
+    // Eliberare memorie alocata dinamic
+    delete oferta1.descriere;
+    delete oferta2.descriere;
+    delete agentie1.descriereAgentie;
+    delete agentie2.descriereAgentie;
 
     return 0;
 }
