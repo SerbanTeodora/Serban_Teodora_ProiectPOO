@@ -75,6 +75,9 @@ public:
     const string* GetDescriere() {
         return this->descriere;
     }
+    int GetContorOferte(int contorOferte) {
+        return this->contorOferte;
+    }
     void SetNumeOferta(const string& nume) {
         this->numeOferta = nume;
     }
@@ -96,6 +99,7 @@ public:
     void SetDescriere(const string& descriere){
         this->descriere = new string(descriere);
     }
+    
 
     //// Funcție statică pentru a calcula durata ofertei
     //static int CalculeazaDurata(const OfertaTuristica & oferta) {
@@ -145,15 +149,48 @@ public:
         numarAgentii--;
     }
 
-    // Functie statica pentru a afisa toate ofertele
-    static void AfiseazaOferte(const AgentieTurism& agentie) {
-        cout << "Ofertele din agentia de turism " << agentie.numeAgentie << ":" << endl;
-        for (int i = 0; i < numarMaximOferte; i++) {
-            if (!agentie.oferte_turistice[i].numeOferta.empty()) {
-                cout << "Oferta: " << agentie.oferte_turistice[i].numeOferta << " - Destinatie: " << agentie.oferte_turistice[i].destinatie << endl;
-            }
-        }
+    string GetNumeAgentie() {
+        return this->numeAgentie;
     }
+    string GetAdresa() {
+        return this->adresa;
+    }
+    string GetTelefon() {
+        return this->telefon;
+    }
+    OfertaTuristica* GetOferteTuristice() {
+        return this->oferte_turistice;
+    }
+    const string* GetDescriereAgentie() {
+        return this->descriereAgentie;
+    }
+    int GetNumarAgentii() {
+        return this->numarAgentii;
+    }
+
+    void SetNumeAgentie(const string& nume) {
+        this->numeAgentie = numeAgentie;
+    }
+    void SetAdresa(const string& adresa) {
+        this->adresa = adresa;
+    }
+    void SetTelefon(const string& telefon) {
+        this->telefon = telefon;
+    }
+    void SetDescriereAgentie(const string& descriereAgentie){
+        this->descriereAgentie = new string(descriereAgentie);
+    }
+
+
+    //// Functie statica pentru a afisa toate ofertele
+    //static void AfiseazaOferte(const AgentieTurism& agentie) {
+    //    cout << "Ofertele din agentia de turism " << agentie.numeAgentie << ":" << endl;
+    //    for (int i = 0; i < numarMaximOferte; i++) {
+    //        if (!agentie.oferte_turistice[i].GetNumeOferta.empty()) {
+    //            cout << "Oferta: " << agentie.oferte_turistice[i].numeOferta << " - Destinatie: " << agentie.oferte_turistice[i].destinatie << endl;
+    //        }
+    //    }
+    //}
 };
 int AgentieTurism::numarAgentii = 0;
 
@@ -212,6 +249,44 @@ public:
         // Aici puteti calcula costul in functie de destinatie, numarul de adulti si copii, si alte criterii
         return 0.0;
     }
+
+    string GetNume() {
+        return this->nume;
+    }
+    string GetDestinatie() {
+        return this->destinatie;
+    }
+    string GetData() {
+        return this->data;
+    }
+    int GetNumarAdulti() {
+        return this->numar_adulti;
+    }
+    int GetNumarCopii() {
+        return this->numar_copii;
+    }
+    string* GetDescriereRezervare() {
+        return this->descriereRezervare;
+    }
+    string GetNumeRezervare() {
+        return this->numeRezervare;
+    }
+
+    void SetDestinatie(const string& destinatie){
+        this->destinatie = destinatie;
+    }
+    void SetData(const string& data){
+        this->data=data;
+    }
+    void SetNumarAdulti(int numar_adulti) {
+        this->numar_adulti = numar_adulti;
+    }
+    void SetNumarCopii(int numar_copii) {
+        this->numar_copii = numar_copii;
+    }
+    void SetDescriereRezervare(const string& descriereRezervare) {
+        this->descriereRezervare = new string(descriereRezervare);
+    }
 };
 int Rezervare::contorRezervari = 0;
 
@@ -233,27 +308,27 @@ int main() {
     AgentieTurism agentie2("Adventure Tours", "Strada Aventurii, Nr. 456", "", "Agentie de turism pentru pasionatii de aventuri.");
     AgentieTurism agentie3;
 
-    // Afisati informatii despre oferte
+    // Afișați informații despre oferte
     cout << "Detalii oferte turistice:" << endl;
     cout << "-------------------------" << endl;
     cout << "Oferta 1:" << endl;
-    cout << "Durata: " << OfertaTuristica::CalculeazaDurata(oferta1) << " zile" << endl;
-    cout << "Descriere: " << *oferta1.descriere << endl;
-    cout << "Numar total oferte: " << OfertaTuristica::contorOferte << endl;
+    /*cout << "Durata: " << OfertaTuristica::CalculeazaDurata(oferta1) << " zile" << endl;*/
+    cout << "Descriere: " << *oferta1.GetDescriere() << endl;
+    cout << "Numar total oferte: " << OfertaTuristica::GetContorOferte << endl;
     cout << endl;
 
-    // Afișați informatii despre agentii de turism
+    // Afișați informații despre agenții de turism
     cout << "Detalii agentii de turism:" << endl;
     cout << "---------------------------" << endl;
     cout << "Agentia 1:" << endl;
-    cout << "Numar total agentii: " << AgentieTurism::numarAgentii << endl;
-    cout << "Descriere agentie: " << *agentie1.descriereAgentie << endl;
+    cout << "Numar total agentii: " << AgentieTurism::GetNumarAgentii() << endl;
+    cout << "Descriere agentie: " << *agentie1.GetDescriereAgentie() << endl;
 
     // Eliberare memorie alocata dinamic
-    delete oferta1.descriere;
-    delete oferta2.descriere;
-    delete agentie1.descriereAgentie;
-    delete agentie2.descriereAgentie;
+    delete oferta1.GetDescriere();
+    delete oferta2.GetDescriere();
+    delete agentie1.GetDescriereAgentie();
+    delete agentie2.GetDescriereAgentie();
 
     return 0;
 }
