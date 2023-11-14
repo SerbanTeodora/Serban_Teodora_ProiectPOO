@@ -9,12 +9,12 @@ private:
     string data_inceput;
     string data_sfarsit;
     int locuri_disponibile;
-    static int contorOferte;  // atribut static
-
-    // Atribut constant
+    static int contorOferte;  
     const string* descriere;
 
 public:
+    
+
     // Constructor cu toti parametrii
     OfertaTuristica(string nume, string destinatie, float pret, string data_inceput, string data_sfarsit, int locuri_disponibile, const string& descriere)
         : numeOferta(nume), destinatie(destinatie), pret(pret), data_inceput(data_inceput), data_sfarsit(data_sfarsit), locuri_disponibile(locuri_disponibile) {
@@ -54,14 +54,24 @@ public:
         contorOferte--;
     }
 
-    string GetNumeOferta() {
-        return this->numeOferta;
+    // Constructor de copiere
+    OfertaTuristica(OfertaTuristica& other)
+        : numeOferta(other.numeOferta), destinatie(other.destinatie),
+        pret(other.pret), data_inceput(other.data_inceput),
+        data_sfarsit(other.data_sfarsit), locuri_disponibile(other.locuri_disponibile) {
+        this->descriere = new string(*other.descriere);
+        contorOferte++;
+    }
+
+    //Get-eri & Set-eri
+    string GetNumeOferta()  {
+        return numeOferta;
+    }
+    float GetPret()  {
+        return pret;
     }
     string GetDestinatie() {
         return this->destinatie;
-    }
-    float GetPret() {
-        return this->pret;
     }
     string GetDataInceput() {
         return this->data_inceput;
@@ -78,19 +88,20 @@ public:
     int GetContorOferte(int contorOferte) {
         return this->contorOferte;
     }
-    void SetNumeOferta(const string& nume) {
+    
+    void SetNumeOferta(string& nume) {
         this->numeOferta = nume;
     }
-    void SetDestinatie(const string& destinatie) {
+    void SetDestinatie(string& destinatie) {
         this->destinatie = destinatie;
     }
     void SetPret(float pret) {
         this->pret = pret;
     }
-    void SetDataInceput(const string& data_inceput) {
+    void SetDataInceput(string& data_inceput) {
         this->data_inceput = data_inceput;
     }
-    void SetDataSfarsit(const string& data_sfarsit) {
+    void SetDataSfarsit(string& data_sfarsit) {
         this->data_sfarsit = data_sfarsit;
     }
     void SetLocuriDisponibile(int locuri_disponibile) {
@@ -99,14 +110,66 @@ public:
     void SetDescriere(const string& descriere){
         this->descriere = new string(descriere);
     }
-    
 
-    //// Funcție statică pentru a calcula durata ofertei
-    //static int CalculeazaDurata(const OfertaTuristica & oferta) {
-    //    // Aici puteți calcula durata în funcție de data de început și data de sfârșit
-    //    // Returnați durata în zile, luni sau altă unitate, după cum doriți
-    //    return 0;
-    //}
+    // Functie de afisare in interiorul clasei
+    void AfiseazaDetalii() {
+        cout << "Nume oferta: " << numeOferta << endl;
+        cout << "Destinatie: " << destinatie << endl;
+        cout << "Pret: " << pret << endl;
+        cout << "Data de inceput:" << data_inceput << endl;
+        cout << "Data de sfarsit:" << data_sfarsit << endl;
+        cout << "Locuri disponibile:" << locuri_disponibile << endl;
+    }
+
+    friend void ProcOferta(OfertaTuristica& oferta);
+
+    // Supraincarcare operator de atribuire (=) pentru OfertaTuristica
+    OfertaTuristica& operator=(const OfertaTuristica& other) {
+        if (this != &other) {
+            delete descriere;  // Elibereaza memoria pentru descriere existenta
+            numeOferta = other.numeOferta;
+            destinatie = other.destinatie;
+            pret = other.pret;
+            data_inceput = other.data_inceput;
+            data_sfarsit = other.data_sfarsit;
+            locuri_disponibile = other.locuri_disponibile;
+            descriere = new string(*other.descriere);  // Alocare memorie pentru o noua descriere
+        }
+        return *this;
+    }
+
+    // Supraincarcare operator de incrementare (++)
+    OfertaTuristica& operator++() {
+        // Crește numărul de locuri disponibile cu 1
+        locuri_disponibile++;
+        return *this;
+    }
+  
+    // Supraincarcare operator de afisare (<<) pentru OfertaTuristica
+    friend ostream& operator<<(ostream& output, const OfertaTuristica& oferta) {
+        output << "Nume oferta: " << oferta.numeOferta << endl;
+        output << "Destinatie: " << oferta.destinatie << endl;
+        output << "Pret: " << oferta.pret << endl;
+        output << "Data de inceput: " << oferta.data_inceput << endl;
+        output << "Data de sfarsit: " << oferta.data_sfarsit << endl;
+        output << "Locuri disponibile: " << oferta.locuri_disponibile << endl;
+        output << "Descriere: " << *oferta.descriere << endl;
+        return output;
+    }
+
+    bool operator==(const OfertaTuristica& other) const {
+        // Comparam toate atributele pentru a determina daca doua oferte sunt egale
+        return (
+            numeOferta == other.numeOferta &&
+            destinatie == other.destinatie &&
+            pret == other.pret &&
+            data_inceput == other.data_inceput &&
+            data_sfarsit == other.data_sfarsit &&
+            locuri_disponibile == other.locuri_disponibile &&
+            *descriere == *other.descriere
+            );
+    }
+    
 };
 int OfertaTuristica::contorOferte = 0;
 
@@ -116,10 +179,8 @@ public:
     string adresa;
     string telefon;
     OfertaTuristica* oferte_turistice;
-    static const int numarMaximOferte = 100;
-    static int numarAgentii;  // atribut static
-
-    // Atribut constant
+    const int numarMaximOferte = 100;
+    static int numarAgentii;
     const string* descriereAgentie;
 
     // Constructor cu toti parametrii
@@ -149,6 +210,19 @@ public:
         numarAgentii--;
     }
 
+    // Constructor de copiere
+    // Constructor de copiere
+    AgentieTurism(const AgentieTurism& other)
+        : numeAgentie(other.numeAgentie), adresa(other.adresa),
+        telefon(other.telefon), descriereAgentie(new string(*other.descriereAgentie)) {
+        oferte_turistice = new OfertaTuristica[numarMaximOferte];
+        for (int i = 0; i < numarMaximOferte; ++i) {
+            oferte_turistice[i] = other.oferte_turistice[i];
+        }
+        numarAgentii++;
+    }
+    
+    //Get-eri & Set-eri
     string GetNumeAgentie() {
         return this->numeAgentie;
     }
@@ -164,38 +238,74 @@ public:
     const string* GetDescriereAgentie() {
         return this->descriereAgentie;
     }
-    int GetNumarAgentii() {
-        return this->numarAgentii;
+    static int GetNumarAgentii() {
+        return numarAgentii;
     }
 
-    void SetNumeAgentie(const string& nume) {
+    void SetNumeAgentie(string& nume) {
         this->numeAgentie = numeAgentie;
     }
-    void SetAdresa(const string& adresa) {
+    void SetAdresa(string& adresa) {
         this->adresa = adresa;
     }
-    void SetTelefon(const string& telefon) {
+    void SetTelefon(string& telefon) {
         this->telefon = telefon;
     }
-    void SetDescriereAgentie(const string& descriereAgentie){
+    void SetDescriereAgentie(string& descriereAgentie){
         this->descriereAgentie = new string(descriereAgentie);
     }
 
+    // Functie de afisare in interiorul clasei
+    void AfiseazaDetalii() {
+        cout << "Nume agentie: " << numeAgentie << endl;
+        cout << "Adresa: " << adresa << endl;
+        cout << "Telefon: " << telefon << endl;
+        // Afișați și alte detalii...
+    }
 
-    //// Functie statica pentru a afisa toate ofertele
-    //static void AfiseazaOferte(const AgentieTurism& agentie) {
-    //    cout << "Ofertele din agentia de turism " << agentie.numeAgentie << ":" << endl;
-    //    for (int i = 0; i < numarMaximOferte; i++) {
-    //        if (!agentie.oferte_turistice[i].GetNumeOferta.empty()) {
-    //            cout << "Oferta: " << agentie.oferte_turistice[i].numeOferta << " - Destinatie: " << agentie.oferte_turistice[i].destinatie << endl;
-    //        }
-    //    }
-    //}
+    // Supraincarcare operator de atribuire (=) pentru AgentieTurism
+    AgentieTurism& operator=(const AgentieTurism& other) {
+        if (this != &other) {
+            numeAgentie = other.numeAgentie;
+            adresa = other.adresa;
+            telefon = other.telefon;
+
+            // Copiere descriereAgentie
+            delete descriereAgentie;
+            descriereAgentie = new string(*other.descriereAgentie);
+
+            // Copiere oferte_turistice
+            delete[] oferte_turistice;
+            oferte_turistice = new OfertaTuristica[numarMaximOferte];
+            for (int i = 0; i < numarMaximOferte; ++i) {
+                oferte_turistice[i] = other.oferte_turistice[i];
+            }
+        }
+        return *this;
+    }
+
+    // Supraincarcare operator de egalitate (==) pentru AgentieTurism
+    bool operator==(const AgentieTurism& other) const {
+        return numeAgentie == other.numeAgentie && adresa == other.adresa && telefon == other.telefon &&
+            *descriereAgentie == *other.descriereAgentie;
+    }
+
+    // Supraincarcare operator de adunare (+) pentru AgentieTurism
+    AgentieTurism operator+(const AgentieTurism& other) const {
+        AgentieTurism result = *this; // Constructor de copiere
+        result.telefon += other.telefon;
+        return result;
+    }
+
+    static bool AreNumeSpecial(AgentieTurism& agentie) {
+        // Exemplu simplu: consideram ca orice agentie cu numele "Travel World" are un nume special
+        return agentie.numeAgentie == "Travel World";
+    }
 };
 int AgentieTurism::numarAgentii = 0;
 
 class Rezervare {
-public:
+private:
     const string nume;
     string destinatie;
     string data;
@@ -204,6 +314,8 @@ public:
     string* descriereRezervare;
     const string numeRezervare;
     static int contorRezervari;
+
+public:
 
     // Constructor cu toti parametrii (folosind lista de initializare)
     Rezervare(string nume, string destinatie, string data, int numar_adulti, int numar_copii)
@@ -227,7 +339,7 @@ public:
         contorRezervari++;
     }
 
-    // Constructor fără parametri (atributele constante sunt deja initializate)
+    // Constructor fara parametri (atributele constante sunt deja initializate)
     Rezervare()
         : nume(""), numeRezervare("Rezervare XYZ") {
         destinatie = "";
@@ -244,12 +356,16 @@ public:
         contorRezervari--;
     }
 
-    // Funcție statica pentru a calcula costul rezervarii
-    static float CalculeazaCostul(const Rezervare& rezervare) {
-        // Aici puteti calcula costul in functie de destinatie, numarul de adulti si copii, si alte criterii
-        return 0.0;
+    //Functie de afisare
+    void AfiseazaDetalii() {
+        cout << "Nume rezervare: " << nume << endl;
+        cout << "Destinatie: " << destinatie << endl;
+        cout << "Data: " << data << endl;
+        cout << "Numar adulti: " << numar_adulti << endl;
+        cout << "Numar copii: " << numar_copii << endl;
     }
 
+    //Get-eri & Set-eri
     string GetNume() {
         return this->nume;
     }
@@ -271,11 +387,14 @@ public:
     string GetNumeRezervare() {
         return this->numeRezervare;
     }
+    static int GetContorRezervari() {
+        return contorRezervari;
+    } 
 
-    void SetDestinatie(const string& destinatie){
+    void SetDestinatie(string& destinatie){
         this->destinatie = destinatie;
     }
-    void SetData(const string& data){
+    void SetData(string& data){
         this->data=data;
     }
     void SetNumarAdulti(int numar_adulti) {
@@ -284,45 +403,256 @@ public:
     void SetNumarCopii(int numar_copii) {
         this->numar_copii = numar_copii;
     }
-    void SetDescriereRezervare(const string& descriereRezervare) {
+    void SetDescriereRezervare(string& descriereRezervare) {
         this->descriereRezervare = new string(descriereRezervare);
+    }
+
+    static void ProcesareRezervare(Rezervare& rezervare) {
+        // Exemplu de prelucrare: consideram ca procesam rezervarile cu un numar impar de adulti
+        if (rezervare.numar_adulti % 2 != 0) {
+            cout << "Rezervare procesata cu succes!" << endl;
+        }
+        else {
+            cout << "Rezervare nevalida pentru procesare!" << endl;
+        }
+    }
+
+    friend void ProcRezervare(Rezervare& rezervare);
+
+    // Supraincarcare operator de atribuire (=) pentru Rezervare
+    Rezervare& operator=(const Rezervare& other) {
+        if (this != &other) {
+            destinatie = other.destinatie;
+            data = other.data;
+            numar_adulti = other.numar_adulti;
+            numar_copii = other.numar_copii;
+
+            // Copiere descriereRezervare
+            delete descriereRezervare;
+            descriereRezervare = new string(*other.descriereRezervare);
+        }
+        return *this;
+    }
+
+    // Supraincarcare operator de egalitate (==) pentru Rezervare
+    bool operator==(const Rezervare& other) const {
+        return destinatie == other.destinatie && data == other.data && numar_adulti == other.numar_adulti &&
+            numar_copii == other.numar_copii && *descriereRezervare == *other.descriereRezervare;
+    }
+
+    // Supraincarcare operator de adunare (+) pentru Rezervare
+    Rezervare operator+(const Rezervare& other) const {
+        Rezervare result = *this;
+        result.numar_adulti += other.numar_adulti;
+        result.numar_copii += other.numar_copii;
+        return result;
     }
 };
 int Rezervare::contorRezervari = 0;
 
-// Functie globala prietena cu clasele
-void FunctiePrietena(const OfertaTuristica& oferta, const AgentieTurism& agentie, const Rezervare& rezervare) {
-    // Aici puteti accesa atributele private ale claselor si sa realizati prelucrarile dorite
+
+
+// Definirea functiei pentru afisarea informatiilor despre oferte
+void AfisareInformatii(OfertaTuristica& oferta) {
+    cout << "Detalii despre oferta turistica:" << endl;
+    cout << "Nume oferta: " << oferta.GetNumeOferta() << endl;
+    cout << "Pret: " << oferta.GetPret() << endl;
+    cout << "Descriere: " << *(oferta.GetDescriere()) << endl;
+    cout << endl;
+}
+
+// Definirea functiei pentru afisarea informatiilor despre rezervari
+void AfisareInformatii(Rezervare& rezervare) {
+    cout << "Detalii despre rezervare:" << endl;
+    cout << "Nume: " << rezervare.GetNume() << endl;
+    cout << "Destinatie: " << rezervare.GetDestinatie() << endl;
+    cout << "Descriere rezervare: " << *(rezervare.GetDescriereRezervare()) << endl;
+    cout << endl;
+} 
+
+// Definirea functiei globale pentru prelucrarea ofertelor turistice
+void ProcOferta(OfertaTuristica& oferta) {
+    // Exemplu de prelucrare: considerăm ca procesam ofertele cu un pret mai mare de 1000
+    if (oferta.pret > 1000.0) {
+        cout << "Oferta procesata cu succes!" << endl;
+    }
+    else {
+        cout << "Oferta nevalida pentru procesare!" << endl;
+    }
+}
+
+// Definirea functiei globale pentru prelucrarea rezervarilor
+void ProcRezervare(Rezervare& rezervare) {
+    // Exemplu de prelucrare: consideram ca procesam rezervarile cu un numar impar de adulti
+    if (rezervare.numar_adulti % 2 != 0) {
+        cout << "Rezervare procesata cu succes!" << endl;
+    }
+    else {
+        cout << "Rezervare nevalida pentru procesare!" << endl;
+    }
 }
 
 int main() {
-    // Testati toti constructorii si functiile statice
-
     // OfertaTuristica
     OfertaTuristica oferta1("Vacanta la mare", "Mamaia", 800.0, "2023-07-15", "2023-07-22", 50, "O saptamana de relaxare la malul marii.");
+    oferta1.AfiseazaDetalii();
+    cout << endl; 
     OfertaTuristica oferta2("City break", "Paris");
+    oferta2.AfiseazaDetalii();
+    cout << endl;
     OfertaTuristica oferta3;
-
-    // AgentieTurism
-    AgentieTurism agentie1("Travel World", "Strada Turistica, Nr. 123", "+1234567890", "Agentie de turism specializata in vacante exotice.");
-    AgentieTurism agentie2("Adventure Tours", "Strada Aventurii, Nr. 456", "", "Agentie de turism pentru pasionatii de aventuri.");
-    AgentieTurism agentie3;
-
-    // Afișați informații despre oferte
-    cout << "Detalii oferte turistice:" << endl;
-    cout << "-------------------------" << endl;
-    cout << "Oferta 1:" << endl;
-    /*cout << "Durata: " << OfertaTuristica::CalculeazaDurata(oferta1) << " zile" << endl;*/
-    cout << "Descriere: " << *oferta1.GetDescriere() << endl;
-    cout << "Numar total oferte: " << OfertaTuristica::GetContorOferte << endl;
+    oferta3.AfiseazaDetalii();
     cout << endl;
 
-    // Afișați informații despre agenții de turism
+    // AgentieTurism
+    AgentieTurism agentie1("Travel World", "Strada Turistica, Nr. 123", "+400775892165", "Agentie de turism specializata in vacante exotice.");
+    agentie1.AfiseazaDetalii();
+    cout << endl;
+    AgentieTurism agentie2("Adventure Tours", "Strada Aventurii, Nr. 456", "", "Agentie de turism pentru pasionatii de aventuri.");
+    agentie2.AfiseazaDetalii();
+    cout << endl;
+    AgentieTurism agentie3;
+    agentie3.AfiseazaDetalii();
+    cout << endl;
+
+    // Rezervari
+    Rezervare rezervare1("John Doe", "Mamaia", "2023-07-15", 2, 1);
+    rezervare1.AfiseazaDetalii();
+    cout << endl;
+    Rezervare rezervare2("Anna Newman", "Londra");
+    rezervare2.AfiseazaDetalii();
+    cout << endl;
+    Rezervare rezervare3;
+    rezervare3.AfiseazaDetalii();
+    cout << endl;
+
+    //Constructori de copiere
+    OfertaTuristica oferta4(oferta1);  // Apel constructor de copiere
+    oferta4.AfiseazaDetalii();
+    cout << endl;
+    AgentieTurism agentie4(agentie1);  // Apel constructor de copiere
+    agentie4.AfiseazaDetalii();
+    cout << endl;
+    Rezervare rezervare4(rezervare1);  // Apel constructor de copiere
+    rezervare4.AfiseazaDetalii();
+    cout << endl;
+
+    
+    // Afisati informatii despre oferte
+    cout << "Detalii oferte turistice:" << endl;
+    cout << "-------------------------" << endl;
+    cout << "Oferta 1:" <<endl;
+    cout << "Nume: " << oferta1.GetNumeOferta() << endl;
+    cout << "Descriere: " << *oferta1.GetDescriere() << endl;
+    cout << endl;
+    cout << "Oferta 2:" << endl;
+    cout << "Nume: " << oferta2.GetNumeOferta() << endl;
+    cout << "Descriere: " << *oferta2.GetDescriere() << endl;
+
+    cout << endl;
+
+    // Afisati informatii despre agentii de turism
     cout << "Detalii agentii de turism:" << endl;
     cout << "---------------------------" << endl;
     cout << "Agentia 1:" << endl;
-    cout << "Numar total agentii: " << AgentieTurism::GetNumarAgentii() << endl;
+    cout << "Nume: " << agentie1.GetNumeAgentie() << endl;
     cout << "Descriere agentie: " << *agentie1.GetDescriereAgentie() << endl;
+    cout << endl;
+    cout << "Agentia 2:" << endl;
+    cout << "Nume: " << agentie2.GetNumeAgentie() << endl;
+    cout << "Descriere agentie: " << *agentie2.GetDescriereAgentie() << endl;
+    
+    // Afișează rezultatul verificarii numelui special pentru agenție
+    if (AgentieTurism::AreNumeSpecial(agentie1)) {
+        cout << "Agentia are un nume special!" << endl;
+    }
+    else {
+        cout << "Agentia nu are un nume special." << endl;
+    }
+
+    cout << endl;
+
+    // OfertaTuristica
+    OfertaTuristica oferta5("Vacanta la mare", "Mamaia",1200.0, "2023-07-15", "2023-07-22", 50, "O saptamana de relaxare la malul marii.");
+    ProcOferta(oferta5);
+
+    // Rezervari
+    Rezervare rezervare5("John Doe", "Mamaia", "2023-07-15", 3, 1);
+    ProcRezervare(rezervare5);
+    
+    cout << endl;
+
+    //PENTRU OfertaTuristica
+    // Operatorul de atribuire =
+    OfertaTuristica ofertaNoua;
+    ofertaNoua = oferta1;
+    cout << "Oferta noua dupa atribuire:\n" << ofertaNoua << endl;
+    cout << endl;
+
+    // Utilizare operator de incrementare ++
+    cout << "Locuri disponibile inainte de incrementare: " << oferta1.GetLocuriDisponibile() << endl;
+    ++oferta1;  // Apel operator de incrementare
+    cout << "Locuri disponibile dupa incrementare: " << oferta1.GetLocuriDisponibile() << endl;
+    cout << endl;
+
+    // Operatorul de afisare <<
+    cout << "Detalii despre oferta4:\n" << oferta4 << endl;
+    cout << endl;
+
+    // Operatorul de egalitate ==
+    if (oferta1 == oferta2) {
+        cout << "Oferta1 si oferta2 sunt egale." << endl;
+    }
+    else {
+        cout << "Oferta1 si oferta2 nu sunt egale." << endl;
+    }
+    cout << endl;
+
+    //PENTRU AgentieTurism
+    // Utilizare operator de atribuire pentru AgentieTurism
+    AgentieTurism agentie5;
+    agentie5 = agentie1; // Apel operator de atribuire
+    cout << "Detalii AgentieTurism dupa atribuire:" << endl;
+    agentie5.AfiseazaDetalii();
+    cout << endl;
+
+    // Utilizare operator de egalitate pentru AgentieTurism
+    if (agentie1 == agentie2) {
+        cout << "Agentiile au aceleasi informatii." << endl;
+    }
+    else {
+        cout << "Agentiile nu au aceleasi informatii." << endl;
+    }
+    cout << endl;
+
+    // Utilizare operator de adunare pentru AgentieTurism
+    AgentieTurism agentie6 = agentie1 + agentie2;
+    cout << "Detalii AgentieTurism dupa adunare:" << endl;
+    agentie6.AfiseazaDetalii();
+    cout << endl;
+
+    //PENTRU Rezervari
+    // Utilizare operator de atribuire pentru Rezervare
+    Rezervare rezervare7;
+    rezervare5 = rezervare1; // Apel operator de atribuire
+    cout << "Detalii Rezervare dupa atribuire:" << endl;
+    rezervare5.AfiseazaDetalii();
+    cout << endl;
+
+    // Utilizare operator de egalitate pentru Rezervare
+    if (rezervare1 == rezervare2) {
+        cout << "Rezervarile au aceleasi informatii." << endl;
+    }
+    else {
+        cout << "Rezervarile nu au aceleasi informatii." << endl;
+    }
+    cout << endl;
+
+    // Utilizare operator de adunare pentru Rezervare
+    Rezervare rezervare6 = rezervare1 + rezervare2;
+    cout << "Detalii Rezervare dupa adunare:" << endl;
+    rezervare6.AfiseazaDetalii();
+    cout << endl;
 
     // Eliberare memorie alocata dinamic
     delete oferta1.GetDescriere();
