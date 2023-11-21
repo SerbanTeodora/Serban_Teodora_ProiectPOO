@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+class OfertaTuristica;
+
 class OfertaTuristica {
 private:
     string numeOferta;
@@ -13,8 +15,6 @@ private:
     const string* descriere;
 
 public:
-    
-
     // Constructor cu toti parametrii
     OfertaTuristica(string nume, string destinatie, float pret, string data_inceput, string data_sfarsit, int locuri_disponibile, const string& descriere)
         : numeOferta(nume), destinatie(destinatie), pret(pret), data_inceput(data_inceput), data_sfarsit(data_sfarsit), locuri_disponibile(locuri_disponibile) {
@@ -449,6 +449,87 @@ public:
     }
 };
 int Rezervare::contorRezervari = 0;
+class Turist {
+private:
+    string numeTurist;
+    int varsta;
+    OfertaTuristica ofertaPreferata;
+    bool asigurareMedicala;
+
+public:
+    Turist(string nume, int varsta, const OfertaTuristica& oferta, bool asigurare)
+        : numeTurist(nume), varsta(varsta), ofertaPreferata(oferta), asigurareMedicala(asigurare) {}
+
+    Turist(string nume, int varsta)
+        : numeTurist(nume), varsta(varsta), ofertaPreferata("Vacanta standard", "Destinatie necunoscuta", 0.0), asigurareMedicala(false) {}
+
+    Turist(const Turist& other) {
+        CopyFrom(other);
+    }
+
+    ~Turist() {
+        cout << "Destructor pentru Turist: " << numeTurist << endl;
+    }
+
+    void CopyFrom(const Turist& other) {
+        numeTurist = other.numeTurist;
+        varsta = other.varsta;
+        ofertaPreferata = other.ofertaPreferata;
+        asigurareMedicala = other.asigurareMedicala;
+    }
+
+    string GetNumeTurist() const {
+        return numeTurist;
+    }
+
+    int GetVarsta() const {
+        return varsta;
+    }
+
+    OfertaTuristica GetOfertaPreferata() const {
+        return ofertaPreferata;
+    }
+
+    bool GetAsigurareMedicala() const {
+        return asigurareMedicala;
+    }
+
+    void SetNumeTurist(const string& nume) {
+        numeTurist = nume;
+    }
+
+    void SetVarsta(int v) {
+        varsta = v;
+    }
+
+    void SetOfertaPreferata(const OfertaTuristica& oferta) {
+        ofertaPreferata = oferta;
+    }
+
+    void SetAsigurareMedicala(bool asigurare) {
+        asigurareMedicala = asigurare;
+    }
+
+    Turist& operator=(const Turist& other) {
+        if (this != &other) {
+            CopyFrom(other);
+        }
+        return *this;
+    }
+
+    bool operator==(const Turist& other) const {
+        return numeTurist == other.numeTurist && varsta == other.varsta &&
+            ofertaPreferata == other.ofertaPreferata && asigurareMedicala == other.asigurareMedicala;
+    }
+
+    friend ostream& operator<<(ostream& output, const Turist& turist) {
+        output << "Nume turist: " << turist.numeTurist << endl;
+        output << "Varsta: " << turist.varsta << endl;
+        output << "Oferta preferata:\n" << turist.ofertaPreferata << endl;
+        output << "Asigurare medicala: " << (turist.asigurareMedicala ? "Da" : "Nu") << endl;
+        return output;
+    }
+};
 
 
 
@@ -653,6 +734,21 @@ int main() {
     cout << "Detalii Rezervare dupa adunare:" << endl;
     rezervare6.AfiseazaDetalii();
     cout << endl;
+
+    // Apel constructor cu toti parametrii pentru Turist
+    Turist turist1("John Doe", 30, oferta1, true);
+    cout << "Turist 1:\n" << turist1 << endl;
+
+
+    // Apel constructor de copiere pentru Turist
+    Turist turist3 = turist1;
+    cout << "Turist 3 (copiat din Turist 1):\n" << turist3 << endl;
+
+    // Apel operator de atribuire pentru Turist
+    Turist turist4("Bob Johnson", 35);
+    turist4 = turist1;
+    cout << "Turist 4 (atribuit din Turist 2):\n" << turist4 << endl;
+
 
     // Eliberare memorie alocata dinamic
     delete oferta1.GetDescriere();
