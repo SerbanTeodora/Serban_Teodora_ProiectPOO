@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class OfertaTuristica;
@@ -168,6 +169,99 @@ public:
             locuri_disponibile == other.locuri_disponibile &&
             *descriere == *other.descriere
             );
+    }
+
+    // Metoda pentru scrierea unei oferte intr-un fisier text
+    void ScrieInFisierText(const string& numeFisier) const {
+        ofstream fout(numeFisier);
+        if (fout.is_open()) {
+            fout << "Nume oferta: " << numeOferta << endl;
+            fout << "Destinatie: " << destinatie << endl;
+            fout << "Pret: " << pret << endl;
+            fout << "Data de inceput: " << data_inceput << endl;
+            fout << "Data de sfarsit: " << data_sfarsit << endl;
+            fout << "Locuri disponibile: " << locuri_disponibile << endl;
+            fout << "Descriere: " << *descriere << endl;
+            fout.close();
+            cout << "Oferta a fost scrisa in fisierul text." << endl;
+        }
+        else {
+            cout << "Eroare la deschiderea fisierului text pentru scriere." << endl;
+        }
+    }
+
+    // Metoda pentru citirea unei oferte dintr-un fisier text
+    void CitesteDinFisierText(const string& numeFisier) {
+        ifstream fin(numeFisier);
+        if (fin.is_open()) {
+            getline(fin, numeOferta);
+            getline(fin, destinatie);
+            fin >> pret;
+            fin.ignore(); // Ignora newline
+            getline(fin, data_inceput);
+            getline(fin, data_sfarsit);
+            fin >> locuri_disponibile;
+            fin.ignore(); // Ignora newline
+            delete descriere; // Eliberam memoria pentru descriere existenta
+            descriere = new string;
+            getline(fin, *descriere);
+            fin.close();
+            cout << "Oferta a fost citita din fisierul text." << endl;
+        }
+        else {
+            cout << "Eroare la deschiderea fisierului text pentru citire." << endl;
+        }
+    }
+
+    // Metoda pentru scrierea unei oferte intr-un fisier binar
+    void ScrieInFisierBinar(const string& numeFisier) const {
+        ofstream fout(numeFisier, ios::binary);
+        if (fout.is_open()) {
+            fout.write(reinterpret_cast<const char*>(&contorOferte), sizeof(contorOferte));
+            fout.write(numeOferta.c_str(), numeOferta.size() + 1);
+            fout.write(destinatie.c_str(), destinatie.size() + 1);
+            fout.write(reinterpret_cast<const char*>(&pret), sizeof(pret));
+            fout.write(data_inceput.c_str(), data_inceput.size() + 1);
+            fout.write(data_sfarsit.c_str(), data_sfarsit.size() + 1);
+            fout.write(reinterpret_cast<const char*>(&locuri_disponibile), sizeof(locuri_disponibile));
+            int dimensiuneDescriere = descriere->size() + 1;
+            fout.write(reinterpret_cast<const char*>(&dimensiuneDescriere), sizeof(dimensiuneDescriere));
+            fout.write(descriere->c_str(), dimensiuneDescriere);
+            fout.close();
+            cout << "Oferta a fost scrisa in fisierul binar." << endl;
+        }
+        else {
+            cout << "Eroare la deschiderea fisierului binar pentru scriere." << endl;
+        }
+    }
+
+    // Metoda pentru citirea unei oferte dintr-un fisier binar
+    void CitesteDinFisierBinar(const string& numeFisier) {
+        ifstream fin(numeFisier, ios::binary);
+        if (fin.is_open()) {
+            fin.read(reinterpret_cast<char*>(&contorOferte), sizeof(contorOferte));
+            char buffer[100];
+            fin.read(buffer, sizeof(buffer));
+            numeOferta = buffer;
+            fin.read(buffer, sizeof(buffer));
+            destinatie = buffer;
+            fin.read(reinterpret_cast<char*>(&pret), sizeof(pret));
+            fin.read(buffer, sizeof(buffer));
+            data_inceput = buffer;
+            fin.read(buffer, sizeof(buffer));
+            data_sfarsit = buffer;
+            fin.read(reinterpret_cast<char*>(&locuri_disponibile), sizeof(locuri_disponibile));
+            int dimensiuneDescriere;
+            fin.read(reinterpret_cast<char*>(&dimensiuneDescriere), sizeof(dimensiuneDescriere));
+            delete descriere;
+            descriere = new string(dimensiuneDescriere, ' ');
+            fin.read(&(*descriere)[0], dimensiuneDescriere);
+            fin.close();
+            cout << "Oferta a fost citita din fisierul binar." << endl;
+        }
+        else {
+            cout << "Eroare la deschiderea fisierului binar pentru citire." << endl;
+        }
     }
     
 };
@@ -449,87 +543,91 @@ public:
     }
 };
 int Rezervare::contorRezervari = 0;
-class Turist {
-private:
-    string numeTurist;
-    int varsta;
-    OfertaTuristica ofertaPreferata;
-    bool asigurareMedicala;
-
-public:
-    Turist(string nume, int varsta, const OfertaTuristica& oferta, bool asigurare)
-        : numeTurist(nume), varsta(varsta), ofertaPreferata(oferta), asigurareMedicala(asigurare) {}
-
-    Turist(string nume, int varsta)
-        : numeTurist(nume), varsta(varsta), ofertaPreferata("Vacanta standard", "Destinatie necunoscuta", 0.0), asigurareMedicala(false) {}
-
-    Turist(const Turist& other) {
-        CopyFrom(other);
-    }
-
-    ~Turist() {
-        cout << "Destructor pentru Turist: " << numeTurist << endl;
-    }
-
-    void CopyFrom(const Turist& other) {
-        numeTurist = other.numeTurist;
-        varsta = other.varsta;
-        ofertaPreferata = other.ofertaPreferata;
-        asigurareMedicala = other.asigurareMedicala;
-    }
-
-    string GetNumeTurist() const {
-        return numeTurist;
-    }
-
-    int GetVarsta() const {
-        return varsta;
-    }
-
-    OfertaTuristica GetOfertaPreferata() const {
-        return ofertaPreferata;
-    }
-
-    bool GetAsigurareMedicala() const {
-        return asigurareMedicala;
-    }
-
-    void SetNumeTurist(const string& nume) {
-        numeTurist = nume;
-    }
-
-    void SetVarsta(int v) {
-        varsta = v;
-    }
-
-    void SetOfertaPreferata(const OfertaTuristica& oferta) {
-        ofertaPreferata = oferta;
-    }
-
-    void SetAsigurareMedicala(bool asigurare) {
-        asigurareMedicala = asigurare;
-    }
-
-    Turist& operator=(const Turist& other) {
-        if (this != &other) {
-            CopyFrom(other);
-        }
-        return *this;
-    }
-
-    bool operator==(const Turist& other) const {
-        return numeTurist == other.numeTurist && varsta == other.varsta &&
-            ofertaPreferata == other.ofertaPreferata && asigurareMedicala == other.asigurareMedicala;
-    }
-
-    friend ostream& operator<<(ostream& output, const Turist& turist) {
-        output << "Nume turist: " << turist.numeTurist << endl;
-        output << "Varsta: " << turist.varsta << endl;
-        output << "Oferta preferata:\n" << turist.ofertaPreferata << endl;
-        output << "Asigurare medicala: " << (turist.asigurareMedicala ? "Da" : "Nu") << endl;
-        return output;
-    }
-};
+//
+//class Turist {
+//private:
+//    string numeTurist;
+//    int varsta;
+//    OfertaTuristica ofertaPreferata;  // Relatia "has-a" cu clasa OfertaTuristica
+//    bool asigurareMedicala;
+//
+//public:
+//    // Constructor cu toti parametrii
+//    Turist(string nume, int varsta, const OfertaTuristica& oferta, bool asigurare)
+//        : numeTurist(nume), varsta(varsta), ofertaPreferata(oferta), asigurareMedicala(asigurare) {}
+//
+//    // Constructor cu nume si varsta
+//    Turist(string nume, int varsta)
+//        : numeTurist(nume), varsta(varsta), ofertaPreferata("Vacanta standard", "Destinatie necunoscuta", 0.0), asigurareMedicala(false) {}
+//
+//    // Constructor de copiere
+//    Turist(const Turist& other)
+//        : numeTurist(other.numeTurist), varsta(other.varsta), ofertaPreferata(other.ofertaPreferata), asigurareMedicala(other.asigurareMedicala) {}
+//
+//    // Destructor
+//    ~Turist() {
+//        cout << "Destructor pentru Turist: " << numeTurist << endl;
+//    }
+//
+//    //Get-eri & Set-eri
+//    string GetNumeTurist() const {
+//        return numeTurist;
+//    }
+//
+//    int GetVarsta() const {
+//        return varsta;
+//    }
+//
+//    OfertaTuristica GetOfertaPreferata() const {
+//        return ofertaPreferata;
+//    }
+//
+//    bool GetAsigurareMedicala() const {
+//        return asigurareMedicala;
+//    }
+//
+//    void SetNumeTurist(const string& nume) {
+//        numeTurist = nume;
+//    }
+//
+//    void SetVarsta(int v) {
+//        varsta = v;
+//    }
+//
+//    void SetOfertaPreferata(const OfertaTuristica& oferta) {
+//        ofertaPreferata = oferta;
+//    }
+//
+//    void SetAsigurareMedicala(bool asigurare) {
+//        asigurareMedicala = asigurare;
+//    }
+//
+//    // Supraincarcare operator de atribuire (=) pentru Turist
+//    Turist& operator=(const Turist& other) {
+//        if (this != &other) {
+//            numeTurist = other.numeTurist;
+//            varsta = other.varsta;
+//            ofertaPreferata = other.ofertaPreferata;
+//            asigurareMedicala = other.asigurareMedicala;
+//        }
+//        return *this;
+//    }
+//
+//    // Supraincarcare operator de egalitate (==) pentru Turist
+//    bool operator==(const Turist& other) const {
+//        return numeTurist == other.numeTurist && varsta == other.varsta &&
+//            ofertaPreferata == other.ofertaPreferata && asigurareMedicala == other.asigurareMedicala;
+//    }
+//
+//    // Supraincarcare operator de afisare (<<) pentru Turist
+//    friend ostream& operator<<(ostream& output, const Turist& turist) {
+//        output << "Nume turist: " << turist.numeTurist << endl;
+//        output << "Varsta: " << turist.varsta << endl;
+//        output << "Oferta preferata:\n" << turist.ofertaPreferata << endl;
+//        output << "Asigurare medicala: " << (turist.asigurareMedicala ? "Da" : "Nu") << endl;
+//        return output;
+//    }
+//};
 
 
 
@@ -735,19 +833,30 @@ int main() {
     rezervare6.AfiseazaDetalii();
     cout << endl;
 
-    // Apel constructor cu toti parametrii pentru Turist
-    Turist turist1("John Doe", 30, oferta1, true);
-    cout << "Turist 1:\n" << turist1 << endl;
+    //// Apel constructor cu toti parametrii pentru Turist
+    //Turist turist1("John Doe", 30, oferta1, true);
+    //cout << "Turist 1:\n" << turist1 << endl;
 
+    //// Apel constructor cu nume si varsta pentru Turist
+    //Turist turist2("Jane Smith", 25);
+    //cout << "Turist 2:\n" << turist2 << endl;
 
-    // Apel constructor de copiere pentru Turist
-    Turist turist3 = turist1;
-    cout << "Turist 3 (copiat din Turist 1):\n" << turist3 << endl;
+    //// Apel constructor de copiere pentru Turist
+    //Turist turist3 = turist1;
+    //cout << "Turist 3 (copiat din Turist 1):\n" << turist3 << endl;
 
-    // Apel operator de atribuire pentru Turist
-    Turist turist4("Bob Johnson", 35);
-    turist4 = turist1;
-    cout << "Turist 4 (atribuit din Turist 2):\n" << turist4 << endl;
+    //// Apel operator de atribuire pentru Turist
+    //Turist turist4("Bob Johnson", 35);
+    //turist4 = turist2;
+    //cout << "Turist 4 (atribuit din Turist 2):\n" << turist4 << endl;
+
+    // Utilizare metode pentru scrierea/citirea ofertelor intr-un fisier text
+    oferta1.ScrieInFisierText("oferta_text.txt");
+    oferta2.CitesteDinFisierText("oferta_text.txt");
+
+    // Utilizare metode pentru scrierea/citirea ofertelor intr-un fisier binar
+    oferta1.ScrieInFisierBinar("oferta_binar.dat");
+    oferta2.CitesteDinFisierBinar("oferta_binar.dat");
 
 
     // Eliberare memorie alocata dinamic
