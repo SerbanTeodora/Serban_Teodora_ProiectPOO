@@ -3,7 +3,6 @@
 #include <string>
 using namespace std;
 
-class OfertaTuristica;
 
 class OfertaTuristica {
 private:
@@ -26,7 +25,7 @@ public:
 
     // Constructor cu nume si destinatie
     OfertaTuristica(string nume, string destinatie)
-        : numeOferta("Oferta XYZ") {
+        : numeOferta("Oferta Vacanta") {
         this->numeOferta = nume;
         this->destinatie = destinatie;
         this->pret = 0.0;
@@ -39,7 +38,7 @@ public:
 
     // Constructor fara parametri
     OfertaTuristica()
-        : numeOferta("Oferta XYZ") {
+        : numeOferta("Oferta Vacanta") {
         numeOferta = "";
         destinatie = "";
         pret = 0.0;
@@ -240,7 +239,7 @@ public:
     }
 
     // Constructor fara parametri
-    AgentieTurism() : numeAgentie("Agentia de Turism XYZ"), adresa(""), telefon(""), descriereAgentie(new string("N/A")) {
+    AgentieTurism() : numeAgentie("Agentia de Turism TREI"), adresa(""), telefon(""), descriereAgentie(new string("N/A")) {
         oferte_turistice = new OfertaTuristica[numarMaximOferte];
         numarAgentii++;
     }
@@ -341,8 +340,6 @@ public:
         // Exemplu simplu: consideram ca orice agentie cu numele "Travel World" are un nume special
         return agentie.numeAgentie == "Travel World";
     }
-
-
 };
 int AgentieTurism::numarAgentii = 0;
 
@@ -361,7 +358,7 @@ public:
 
     // Constructor cu toti parametrii (folosind lista de initializare)
     Rezervare(string nume, string destinatie, string data, int numar_adulti, int numar_copii)
-        : nume(nume), numeRezervare("Rezervare XYZ") {
+        : nume(nume), numeRezervare("Rezervare vacanta") {
         this->destinatie = destinatie;
         this->data = data;
         this->numar_adulti = numar_adulti;
@@ -602,7 +599,6 @@ public:
         output << "Asigurare medicala: " << (turist.asigurareMedicala ? "Da" : "Nu") << endl;
         return output;
     }
-
 };
 
 class Excursie : public OfertaTuristica {
@@ -619,15 +615,12 @@ public:
     string GetGhid() const {
         return ghid;
     }
-
     int GetDurata() const {
         return durata;
     }
-
     void SetGhid(const string& newGhid) {
         ghid = newGhid;
     }
-
     void SetDurata(int newDurata) {
         durata = newDurata;
     }
@@ -653,15 +646,12 @@ public:
     string GetTipTransport() const {
         return tip_transport;
     }
-
     bool GetAsigurareCalatorie() const {
         return asigurare_calatorie;
     }
-
     void SetTipTransport(const string& newTipTransport) {
         tip_transport = newTipTransport;
     }
-
     void SetAsigurareCalatorie(bool newAsigurareCalatorie) {
         asigurare_calatorie = newAsigurareCalatorie;
     }
@@ -672,9 +662,6 @@ public:
         cout << "Asigurare calatorie: " << (asigurare_calatorie ? "Da" : "Nu") << endl;
     }
 };
-
-
-
 
 // Definirea functiei pentru afisarea informatiilor despre oferte
 void AfisareInformatii(OfertaTuristica& oferta) {
@@ -740,10 +727,10 @@ int main() {
     cout << endl;
 
     // Rezervari
-    Rezervare rezervare1("John Doe", "Mamaia", "2023-07-15", 2, 1);
+    Rezervare rezervare1("Vasile Alexandru", "Mamaia", "2023-07-15", 2, 1);
     rezervare1.AfiseazaDetalii();
     cout << endl;
-    Rezervare rezervare2("Anna Newman", "Londra");
+    Rezervare rezervare2("Ion Mihaela", "Londra");
     rezervare2.AfiseazaDetalii();
     cout << endl;
     Rezervare rezervare3;
@@ -892,7 +879,7 @@ int main() {
     rezervare1.ScrieInFisierBinar("rezervare_binar.bin");
 
     // Creare obiect de tip Excursie
-    Excursie excursie1("Excursie Montană", "Munții Carpați", 1200.0, "2023-08-10", "2023-08-15", 20, "Descoperiți frumusețea munților", "Ghid Montan", 5);
+    Excursie excursie1("Excursie Montana", "Muntii Carpati", 1200.0, "2023-08-10", "2023-08-15", 20, "Descoperiti frumusetea muntilor", "Ghid Montan", 5);
     excursie1.AfiseazaDetalii();
     cout << endl;
 
