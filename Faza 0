@@ -141,7 +141,7 @@ public:
 
     // Supraincarcare operator de incrementare (++)
     OfertaTuristica& operator++() {
-        // Crește numărul de locuri disponibile cu 1
+        // Crește numarul de locuri disponibile cu 1
         locuri_disponibile++;
         return *this;
     }
@@ -337,7 +337,7 @@ public:
     }
 
     static bool AreNumeSpecial(AgentieTurism& agentie) {
-        // Exemplu simplu: consideram ca orice agentie cu numele "Travel World" are un nume special
+        // Consideram ca orice agentie cu numele "Travel World" are un nume special
         return agentie.numeAgentie == "Travel World";
     }
 };
@@ -595,7 +595,7 @@ public:
     friend ostream& operator<<(ostream& output, const Turist& turist) {
         output << "Nume turist: " << turist.numeTurist << endl;
         output << "Varsta: " << turist.varsta << endl;
-        output << "Oferta preferata:\n" << turist.ofertaPreferata << endl;
+        output << "Oferta preferata:\n" << turist.ofertaPreferata;
         output << "Asigurare medicala: " << (turist.asigurareMedicala ? "Da" : "Nu") << endl;
         return output;
     }
@@ -748,6 +748,10 @@ int main() {
     rezervare4.AfiseazaDetalii();
     cout << endl;
 
+    cout << "Afisare utilizand functia globala" << endl;
+    AfisareInformatii(oferta1);
+
+    cout << endl;
 
     // Afisati informatii despre oferte
     cout << "Detalii oferte turistice:" << endl;
@@ -773,7 +777,7 @@ int main() {
     cout << "Nume: " << agentie2.GetNumeAgentie() << endl;
     cout << "Descriere agentie: " << *agentie2.GetDescriereAgentie() << endl;
 
-    // Afișează rezultatul verificarii numelui special pentru agenție
+    // Afiseaza rezultatul verificarii numelui special pentru agentie
     if (AgentieTurism::AreNumeSpecial(agentie1)) {
         cout << "Agentia are un nume special!" << endl;
     }
@@ -867,16 +871,19 @@ int main() {
 
     Turist turist1("Ion Mihaela", 25, oferta1, true);
     Turist turist2("Vasile Alexandru", 30, oferta2, false);
-    // Afisarea informatiilor despre turiști
+
+    // Afisarea informatiilor despre turisti
     cout << "Informatii despre Ion Mihaela:\n" << turist1 << endl;
     cout << "Informatii despre Vasile Alexandru:\n" << turist2 << endl;
 
     // Utilizare metode pentru scrierea ofertelor si rezervarilor intr-un fisier text
     oferta1.ScrieInFisierText("oferta_text.txt");
     rezervare1.ScrieInFisierText("rezervare_text.txt");
+    cout << endl;
     // Utilizare metode pentru scrierea ofertelor si rezervarilor intr-un fisier binar
     oferta1.ScrieInFisierBinar("oferta_binar.dat");
     rezervare1.ScrieInFisierBinar("rezervare_binar.bin");
+    cout << endl;
 
     // Creare obiect de tip Excursie
     Excursie excursie1("Excursie Montana", "Muntii Carpati", 1200.0, "2023-08-10", "2023-08-15", 20, "Descoperiti frumusetea muntilor", "Ghid Montan", 5);
