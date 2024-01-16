@@ -487,6 +487,7 @@ public:
         return result;
     }
 
+    // Metoda pentru scrierea unei rezervari intr-un fisier text
     void ScrieInFisierText(const string& numeFisier) const {
         ofstream fout(numeFisier);
         if (fout.is_open()) {
@@ -504,7 +505,7 @@ public:
         }
     }
 
-    // Metoda pentru scrierea unei rezervări într-un fișier binar
+    // Metoda pentru scrierea unei rezervari intr-un fisier binar
     void ScrieInFisierBinar(const string& numeFisier) const {
         ofstream fout(numeFisier, ios::binary);
         if (fout.is_open()) {
