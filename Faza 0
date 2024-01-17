@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 using namespace std;
 
 
@@ -139,9 +140,21 @@ public:
         return *this;
     }
 
+    friend istream& operator>>(istream& input, OfertaTuristica& oferta) {
+        cout << "Introduceti detaliile ofertei turistice:" << endl;
+        cout << "Nume oferta: ";
+        input >> ws;
+        getline(input, oferta.numeOferta);
+        cout << "Destinatie: ";
+        getline(input, oferta.destinatie);
+       
+        return input;
+    }
+
+
     // Supraincarcare operator de incrementare (++)
     OfertaTuristica& operator++() {
-        // Crește numarul de locuri disponibile cu 1
+        // Creste numarul de locuri disponibile cu 1
         locuri_disponibile++;
         return *this;
     }
@@ -150,11 +163,6 @@ public:
     friend ostream& operator<<(ostream& output, const OfertaTuristica& oferta) {
         output << "Nume oferta: " << oferta.numeOferta << endl;
         output << "Destinatie: " << oferta.destinatie << endl;
-        output << "Pret: " << oferta.pret << endl;
-        output << "Data de inceput: " << oferta.data_inceput << endl;
-        output << "Data de sfarsit: " << oferta.data_sfarsit << endl;
-        output << "Locuri disponibile: " << oferta.locuri_disponibile << endl;
-        output << "Descriere: " << *oferta.descriere << endl;
         return output;
     }
 
@@ -899,6 +907,24 @@ int main() {
     // Upcasting
     OfertaTuristica* ofertaUpcast1 = &excursie1;
     Rezervare* rezervareUpcast2 = &pachet1;
+
+    //Vectori
+    vector<OfertaTuristica> oferteVector;
+    vector<AgentieTurism> agentieVector;
+    vector<Rezervare> rezervareVector;
+
+    // Citirea si afisarea a doua oferte turistice
+    for (int i = 0; i < 2; ++i) {
+        OfertaTuristica oferta;
+        cin>>oferta;
+        oferteVector.push_back(oferta);
+    }
+    cout << endl;
+    // Afisarea ofertelor din vector
+    for (const auto& oferta : oferteVector) {
+        cout<<oferta;
+    }
+    cout << endl;
 
     // Eliberare memorie alocata dinamic
     delete oferta1.GetDescriere();
